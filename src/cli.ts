@@ -13,7 +13,7 @@ import { formatOutput } from "./attom/format.js";
 function validateEndpoint(name: string): void {
   if (!(name in ENDPOINTS)) {
     process.stderr.write(
-      `Error: unknown endpoint "${name}". Use "endpoints" to list.\n`
+      `Error: unknown endpoint "${name}". Use "endpoints" to list.\n`,
     );
     process.exit(1);
   }
@@ -52,7 +52,7 @@ program
       address1,
       address2,
       apiKey,
-      opts.endpoint
+      opts.endpoint,
     );
     console.log(JSON.stringify(result, null, 2));
   });

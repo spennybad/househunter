@@ -2,8 +2,7 @@ import "dotenv/config";
 import { readFileSync, existsSync } from "node:fs";
 import type { Config, SearchArea } from "./config.js";
 
-export const BASE_URL =
-  "https://api.gateway.attomdata.com/propertyapi/v1.0.0";
+export const BASE_URL = "https://api.gateway.attomdata.com/propertyapi/v1.0.0";
 
 export const ENDPOINTS: Record<string, string> = {
   snapshot: "/property/snapshot",
@@ -30,13 +29,13 @@ export function getApiKey(): string {
   let key = process.env.ATTOM_API_KEY;
   if (!key && existsSync(".env")) {
     const match = readFileSync(".env", "utf-8").match(
-      /^ATTOM_API_KEY=["']?(.+?)["']?\s*$/m
+      /^ATTOM_API_KEY=["']?(.+?)["']?\s*$/m,
     );
     key = match?.[1];
   }
   if (!key) {
     process.stderr.write(
-      "Error: ATTOM_API_KEY not set. Set it via environment variable or .env file.\n"
+      "Error: ATTOM_API_KEY not set. Set it via environment variable or .env file.\n",
     );
     process.exit(1);
   }
@@ -45,13 +44,13 @@ export function getApiKey(): string {
 
 function toQueryString(params: Record<string, string | number>): string {
   return new URLSearchParams(
-    Object.entries(params).map(([k, v]) => [k, String(v)])
+    Object.entries(params).map(([k, v]) => [k, String(v)]),
   ).toString();
 }
 
 function buildSearchParams(
   area: SearchArea,
-  config: Config
+  config: Config,
 ): Record<string, string | number> {
   const params: Record<string, string | number> = { ...area.params };
 
@@ -71,7 +70,7 @@ function buildSearchParams(
 }
 
 function extractProperties(
-  data: Record<string, unknown>
+  data: Record<string, unknown>,
 ): Record<string, unknown>[] {
   const candidates = [
     data.property,
@@ -91,7 +90,7 @@ async function apiFetch(url: string, apiKey: string): Promise<Response> {
 export async function searchProperties(
   config: Config,
   apiKey: string,
-  endpoint: string
+  endpoint: string,
 ): Promise<Record<string, unknown>[]> {
   const allResults: Record<string, unknown>[] = [];
 
@@ -101,7 +100,7 @@ export async function searchProperties(
     const url = `${BASE_URL}${ENDPOINTS[endpoint]}`;
 
     process.stderr.write(
-      `\u{1F50D} Searching: ${area.name} (${endpoint})...\n`
+      `\u{1F50D} Searching: ${area.name} (${endpoint})...\n`,
     );
     process.stderr.write(`   URL: ${url}?${qs}\n`);
 
@@ -110,7 +109,7 @@ export async function searchProperties(
       if (!resp.ok) {
         const body = await resp.text();
         process.stderr.write(
-          `   API Error: ${resp.status} - ${body.slice(0, 200)}\n`
+          `   API Error: ${resp.status} - ${body.slice(0, 200)}\n`,
         );
         continue;
       }
@@ -133,14 +132,12 @@ export async function lookupProperty(
   address1: string,
   address2: string,
   apiKey: string,
-  endpoint: string
+  endpoint: string,
 ): Promise<unknown> {
   const qs = toQueryString({ address1, address2 });
   const url = `${BASE_URL}${ENDPOINTS[endpoint]}`;
 
-  process.stderr.write(
-    `\u{1F50D} Looking up: ${address1}, ${address2}...\n`
-  );
+  process.stderr.write(`\u{1F50D} Looking up: ${address1}, ${address2}...\n`);
   const resp = await apiFetch(`${url}?${qs}`, apiKey);
   if (!resp.ok) {
     const body = await resp.text();

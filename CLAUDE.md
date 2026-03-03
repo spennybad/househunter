@@ -38,11 +38,11 @@ config.yaml             # Search config — areas, filters, price, output settin
 
 ## Data Sources
 
-| Source | Role | Status |
-|--------|------|--------|
-| **ATTOM** | Property enrichment — detailed data, valuations, sale/tax history | Implemented |
-| **Zillow** | Listing discovery — active for-sale properties | Not yet |
-| **Redfin** | Listing discovery — active for-sale properties | Not yet |
+| Source     | Role                                                              | Status      |
+| ---------- | ----------------------------------------------------------------- | ----------- |
+| **ATTOM**  | Property enrichment — detailed data, valuations, sale/tax history | Implemented |
+| **Zillow** | Listing discovery — active for-sale properties                    | Not yet     |
+| **Redfin** | Listing discovery — active for-sale properties                    | Not yet     |
 
 ## Commands
 

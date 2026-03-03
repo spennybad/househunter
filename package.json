@@ -5,7 +5,19 @@
   "type": "module",
   "scripts": {
     "start": "tsx src/cli.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "lint": "eslint src/",
+    "format": "prettier --write .",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,js}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{json,yaml,yml,md}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "commander": "^13.1.0",
@@ -13,9 +25,15 @@
     "js-yaml": "^4.1.0"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^22.13.9",
+    "eslint": "^10.0.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.3.1",
+    "prettier": "^3.8.1",
     "tsx": "^4.19.3",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.56.1"
   }
 }

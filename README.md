@@ -11,11 +11,11 @@ pnpm install
 
 ## Data Sources
 
-| Source | Purpose |
-|--------|---------|
-| **Zillow** | Listing discovery — active for-sale properties |
-| **Redfin** | Listing discovery — active for-sale properties |
-| **ATTOM** | Property enrichment — detailed data, valuations, sale history, tax assessments |
+| Source     | Purpose                                                                        |
+| ---------- | ------------------------------------------------------------------------------ |
+| **Zillow** | Listing discovery — active for-sale properties                                 |
+| **Redfin** | Listing discovery — active for-sale properties                                 |
+| **ATTOM**  | Property enrichment — detailed data, valuations, sale history, tax assessments |
 
 ## Usage
 
@@ -49,9 +49,11 @@ pnpm start endpoints
 Edit `config.yaml` to set search areas, property types, price ranges, and filters. See comments in the file for all options.
 
 ### Supported property types
+
 `SFR`, `CONDO`, `TOWNHOUSE`, `MOBILE`, `LAND`, `MULTI-FAMILY`, `OTHER`
 
 ### Search area types
+
 - `zips` — Postal codes grouped by city
 - `geo` — Latitude/longitude + radius
 - `addresses` — Specific street addresses
@@ -59,15 +61,15 @@ Edit `config.yaml` to set search areas, property types, price ranges, and filter
 
 ## ATTOM API Endpoints
 
-| Endpoint | Description |
-|----------|-------------|
-| `snapshot` | Quick property overview |
-| `detail` | Full property detail |
-| `basicprofile` | Basic profile |
+| Endpoint          | Description                            |
+| ----------------- | -------------------------------------- |
+| `snapshot`        | Quick property overview                |
+| `detail`          | Full property detail                   |
+| `basicprofile`    | Basic profile                          |
 | `expandedprofile` | Expanded profile with building details |
-| `sale` | Sale/transaction history |
-| `avm` | Automated valuation model |
-| `assessment` | Tax assessment data |
+| `sale`            | Sale/transaction history               |
+| `avm`             | Automated valuation model              |
+| `assessment`      | Tax assessment data                    |
 
 ## API Keys
 

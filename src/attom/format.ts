@@ -28,7 +28,11 @@ type PropertyRow = Record<FieldKey, string>;
 function dig(obj: Record<string, unknown>, path: string[]): unknown {
   let cur: unknown = obj;
   for (const k of path) {
-    if (cur && typeof cur === "object" && k in (cur as Record<string, unknown>)) {
+    if (
+      cur &&
+      typeof cur === "object" &&
+      k in (cur as Record<string, unknown>)
+    ) {
       cur = (cur as Record<string, unknown>)[k];
     } else {
       return undefined;
@@ -86,7 +90,7 @@ const FORMATTERS: Record<string, (r: Record<string, unknown>[]) => string> = {
 export function formatOutput(
   results: Record<string, unknown>[],
   fmt: string,
-  outputFile?: string | null
+  outputFile?: string | null,
 ): void {
   const formatter = FORMATTERS[fmt] ?? formatJson;
   const out = formatter(results);

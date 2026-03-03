@@ -55,5 +55,5 @@ page_size: 100
 
 # Output settings
 output:
-  format: table  # json | csv | table
-  file: null     # null = stdout, or path like "results.json"
+  format: table # json | csv | table
+  file: null # null = stdout, or path like "results.json"
