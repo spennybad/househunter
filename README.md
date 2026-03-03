@@ -1,78 +1,102 @@
 # househunter
 
-Agent-driven tool for finding, enriching, and tracking residential property listings. Aggregates listings from multiple sources (Zillow, Redfin, etc.) and enriches them with detailed property data from ATTOM.
+Agent-driven tool for finding, enriching, and tracking residential property listings. Aggregates listings from multiple sources and enriches them with detailed property data.
 
 ## Setup
 
 ```bash
 pnpm install
-# Add your API keys to .env.local
 ```
 
-## Data Sources
+Add your API keys to `.env.local`:
 
-| Source     | Purpose                                                                        |
-| ---------- | ------------------------------------------------------------------------------ |
-| **Zillow** | Listing discovery — active for-sale properties                                 |
-| **Redfin** | Listing discovery — active for-sale properties                                 |
-| **ATTOM**  | Property enrichment — detailed data, valuations, sale history, tax assessments |
+```
+RAPIDAPI_KEY=your-rapidapi-key
+ATTOM_API_KEY=your-attom-api-key
+```
 
 ## Usage
 
-### Search properties using config filters
+### Search all locations (primary command)
 
 ```bash
-pnpm start search                          # Uses config.yaml defaults
-pnpm start search -- -f table              # Pretty table output
-pnpm start search -- -f csv -o results.csv # Export to CSV
-pnpm start search -- -e sale               # Use sale history endpoint
-pnpm start search -- -c my-config.yaml     # Custom config
+pnpm start run                     # Search config.yaml locations, output table
+pnpm start run -f csv -o results.csv  # Export to CSV file
+pnpm start run -f json             # JSON output to stdout
+pnpm start run -c my-config.yaml   # Custom config file
 ```
 
-### Look up a single property
+### Zillow (direct API access)
 
 ```bash
-pnpm start lookup "4529 Winona Court" "Denver, CO"
-pnpm start lookup "123 Main St" "Sunnyvale, CA" -- -e avm        # Get valuation
-pnpm start lookup "123 Main St" "Sunnyvale, CA" -- -e sale        # Sale history
-pnpm start lookup "123 Main St" "Sunnyvale, CA" -- -e assessment  # Tax assessment
+pnpm start zillow search "Palo Alto, CA"       # Search listings by location
+pnpm start zillow search-coords 37.44 -122.14  # Search by coordinates
+pnpm start zillow detail 19497156               # Property details by zpid
+pnpm start zillow address "123 Main St, City, ST 12345"  # Details by address
+pnpm start zillow zestimate 19497156            # Zestimate by zpid
 ```
 
-### List available endpoints
+### ATTOM (direct API access)
 
 ```bash
-pnpm start endpoints
+pnpm start attom search                                  # Search using ATTOM config
+pnpm start attom lookup "4529 Winona Court" "Denver, CO"  # Single property lookup
+pnpm start attom endpoints                                # List available endpoints
 ```
 
 ## Configuration
 
-Edit `config.yaml` to set search areas, property types, price ranges, and filters. See comments in the file for all options.
+Edit `config.yaml` to configure search locations, filters, and output:
 
-### Supported property types
+```yaml
+locations:
+  - "Palo Alto, CA"
+  - "Mountain View, CA"
 
-`SFR`, `CONDO`, `TOWNHOUSE`, `MOBILE`, `LAND`, `MULTI-FAMILY`, `OTHER`
+search:
+  home_status: FOR_SALE # FOR_SALE | FOR_RENT | RECENTLY_SOLD
+  sort: NEWEST # DEFAULT | NEWEST | PRICE_LOW | PRICE_HIGH
 
-### Search area types
+filters:
+  min_beds: 2
+  min_baths: 2
+  max_price: 2000000
+  home_types:
+    - SINGLE_FAMILY
 
-- `zips` — Postal codes grouped by city
-- `geo` — Latitude/longitude + radius
-- `addresses` — Specific street addresses
-- `fips` — FIPS county codes
+commute:
+  max_miles: 25 # Straight-line distance filter
+  addresses:
+    - label: "Office"
+      address: "3000 Hanover Street, Palo Alto, CA"
+      lat: 37.3957
+      lng: -122.1467
 
-## ATTOM API Endpoints
+output:
+  format: table # json | csv | table
+  file: null # null = stdout, or file path
+```
 
-| Endpoint          | Description                            |
-| ----------------- | -------------------------------------- |
-| `snapshot`        | Quick property overview                |
-| `detail`          | Full property detail                   |
-| `basicprofile`    | Basic profile                          |
-| `expandedprofile` | Expanded profile with building details |
-| `sale`            | Sale/transaction history               |
-| `avm`             | Automated valuation model              |
-| `assessment`      | Tax assessment data                    |
+## Logging
+
+Structured logging via pino. Control verbosity with `LOG_LEVEL`:
+
+```bash
+LOG_LEVEL=debug pnpm start run    # Verbose output (includes API URLs)
+LOG_LEVEL=silent pnpm start run   # Suppress all logs, data only
+```
+
+## Data Sources
+
+| Source     | Role                                               | Status      |
+| ---------- | -------------------------------------------------- | ----------- |
+| **Zillow** | Listing discovery — active for-sale properties     | Implemented |
+| **ATTOM**  | Property enrichment — valuations, sale/tax history | Implemented |
+| **Redfin** | Listing discovery — active for-sale properties     | Not yet     |
 
 ## API Keys
 
+- **Zillow**: Get a RapidAPI key at [rapidapi.com](https://rapidapi.com/letscrape-6bRBa3QguO5/api/real-time-zillow-data)
 - **ATTOM**: Get one at [developer.attomdata.com](https://api.developer.attomdata.com/home)
 
 All keys go in `.env.local`.

@@ -1,4 +1,5 @@
 import { writeFileSync } from "node:fs";
+import logger from "../logger.js";
 
 type FieldKey =
   | "address"
@@ -97,7 +98,7 @@ export function formatOutput(
 
   if (outputFile) {
     writeFileSync(outputFile, out);
-    process.stderr.write(`\u{1F4C1} Written to ${outputFile}\n`);
+    logger.info("Written to %s", outputFile);
   } else {
     console.log(out);
   }

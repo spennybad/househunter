@@ -1,5 +1,7 @@
-import "dotenv/config";
+import { config as loadEnv } from "dotenv";
+loadEnv({ path: ".env.local" });
 import { readFileSync, existsSync } from "node:fs";
+import logger from "../logger.js";
 import type { Config, SearchArea } from "./config.js";
 
 export const BASE_URL = "https://api.gateway.attomdata.com/propertyapi/v1.0.0";
@@ -34,8 +36,8 @@ export function getApiKey(): string {
     key = match?.[1];
   }
   if (!key) {
-    process.stderr.write(
-      "Error: ATTOM_API_KEY not set. Set it via environment variable or .env file.\n",
+    logger.error(
+      "ATTOM_API_KEY not set. Set it via environment variable or .env file.",
     );
     process.exit(1);
   }
@@ -99,17 +101,18 @@ export async function searchProperties(
     const qs = toQueryString(params);
     const url = `${BASE_URL}${ENDPOINTS[endpoint]}`;
 
-    process.stderr.write(
-      `\u{1F50D} Searching: ${area.name} (${endpoint})...\n`,
-    );
-    process.stderr.write(`   URL: ${url}?${qs}\n`);
+    logger.info("Searching: %s (%s)", area.name, endpoint);
+    logger.debug("URL: %s?%s", url, qs);
 
     try {
       const resp = await apiFetch(`${url}?${qs}`, apiKey);
       if (!resp.ok) {
         const body = await resp.text();
-        process.stderr.write(
-          `   API Error: ${resp.status} - ${body.slice(0, 200)}\n`,
+        logger.error(
+          { status: resp.status },
+          "API Error: %d - %s",
+          resp.status,
+          body.slice(0, 200),
         );
         continue;
       }
@@ -117,11 +120,11 @@ export async function searchProperties(
       const data = (await resp.json()) as Record<string, unknown>;
       const properties = extractProperties(data);
 
-      process.stderr.write(`   Found ${properties.length} properties\n`);
+      logger.info("Found %d properties", properties.length);
       for (const p of properties) p._search_area = area.name;
       allResults.push(...properties);
     } catch (e) {
-      process.stderr.write(`   Error: ${e}\n`);
+      logger.error({ err: e }, "Search failed for %s", area.name);
     }
   }
 
@@ -137,7 +140,7 @@ export async function lookupProperty(
   const qs = toQueryString({ address1, address2 });
   const url = `${BASE_URL}${ENDPOINTS[endpoint]}`;
 
-  process.stderr.write(`\u{1F50D} Looking up: ${address1}, ${address2}...\n`);
+  logger.info("Looking up: %s, %s", address1, address2);
   const resp = await apiFetch(`${url}?${qs}`, apiKey);
   if (!resp.ok) {
     const body = await resp.text();
