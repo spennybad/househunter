@@ -1,0 +1,59 @@
+# ATTOM Explorer Configuration
+# Docs: https://api.developer.attomdata.com/docs
+
+# Search areas - ~20 minute commute radius from Palo Alto
+search_areas:
+  zips:
+    Palo Alto: [94301, 94303, 94306]
+    Menlo Park: [94025]
+    Mountain View: [94040, 94041, 94043]
+    Los Altos: [94022, 94024]
+    Sunnyvale: [94085, 94086, 94087]
+    Redwood City: [94061, 94063]
+    Stanford: [94305]
+    Portola Valley: [94028]
+    Woodside: [94062]
+    Atherton: [94027]
+    Pacifica: [94044]
+
+  # geo:
+  #   - name: "Custom area"
+  #     latitude: 37.4419
+  #     longitude: -122.1430
+  #     radius: 5
+
+  # addresses:
+  #   - address1: "4529 Winona Court"
+  #     address2: "Denver, CO"
+
+  # fips:
+  #   - fips: "06085"
+  #     name: "Santa Clara County"
+
+# Property type filters
+# Values: SFR, CONDO, TOWNHOUSE, MOBILE, LAND, MULTI-FAMILY, OTHER
+property_types: []
+
+# Price range (USD)
+price:
+  min: null
+  max: 2000000
+
+# Additional filters
+filters:
+  min_beds: null
+  max_beds: null
+  min_baths: null
+  max_baths: null
+  min_sqft: null
+  max_sqft: null
+  year_built_min: null
+  year_built_max: null
+
+# How many results per request (max 100)
+page_size: 100
+
+# Output settings
+output:
+  format: table  # json | csv | table
+  file: null     # null = stdout, or path like "results.json"
