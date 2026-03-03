@@ -1,13 +1,21 @@
 # househunter
 
-Automated house hunting CLI for exploring the [ATTOM Property API](https://api.developer.attomdata.com/docs).
+Agent-driven tool for finding, enriching, and tracking residential property listings. Aggregates listings from multiple sources (Zillow, Redfin, etc.) and enriches them with detailed property data from ATTOM.
 
 ## Setup
 
 ```bash
 pnpm install
-# Add your ATTOM API key to .env.local
+# Add your API keys to .env.local
 ```
+
+## Data Sources
+
+| Source | Purpose |
+|--------|---------|
+| **Zillow** | Listing discovery — active for-sale properties |
+| **Redfin** | Listing discovery — active for-sale properties |
+| **ATTOM** | Property enrichment — detailed data, valuations, sale history, tax assessments |
 
 ## Usage
 
@@ -49,7 +57,7 @@ Edit `config.yaml` to set search areas, property types, price ranges, and filter
 - `addresses` — Specific street addresses
 - `fips` — FIPS county codes
 
-## API Endpoints
+## ATTOM API Endpoints
 
 | Endpoint | Description |
 |----------|-------------|
@@ -61,6 +69,8 @@ Edit `config.yaml` to set search areas, property types, price ranges, and filter
 | `avm` | Automated valuation model |
 | `assessment` | Tax assessment data |
 
-## API Key
+## API Keys
 
-Get one at [developer.attomdata.com](https://api.developer.attomdata.com/home). Set via `.env` file or `ATTOM_API_KEY` env var.
+- **ATTOM**: Get one at [developer.attomdata.com](https://api.developer.attomdata.com/home)
+
+All keys go in `.env.local`.
