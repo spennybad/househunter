@@ -16,6 +16,7 @@ locations:
 search:
   home_status: FOR_SALE # FOR_SALE | FOR_RENT | RECENTLY_SOLD
   sort: NEWEST # DEFAULT | NEWEST | PRICE_LOW | PRICE_HIGH
+  radius: 25 # miles from first commute address (coordinate search)
 
 filters:
   min_beds: 2
@@ -40,3 +41,6 @@ commute:
 output:
   format: table # json | csv | table
   file: null # null = stdout, or path like "results.json"
+
+db:
+  url: postgresql://househunter:househunter@localhost:5432/househunter

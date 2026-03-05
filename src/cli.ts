@@ -27,6 +27,8 @@ import type {
 import { loadConfig } from "./config.js";
 import { run } from "./run.js";
 import { formatListings } from "./format.js";
+import { getPool, initSchema, close } from "./db/index.js";
+import { getStats, getSnapshotCount } from "./db/generated/query_sql.js";
 
 function validateEndpoint(name: string): void {
   if (!(name in ENDPOINTS)) {
@@ -201,6 +203,50 @@ zillow
     const apiKey = getRapidApiKey();
     const result = await getZestimate(zpid, apiKey);
     console.log(JSON.stringify(result, null, 2));
+  });
+
+// --- DB commands ---
+
+const db = program.command("db").description("Database commands");
+
+db.command("init")
+  .description("Initialize the database schema")
+  .option("-c, --config <path>", "Config file path", "config.yaml")
+  .action(async (opts) => {
+    const config = loadConfig(opts.config);
+    const pool = await getPool(config.db.url);
+    try {
+      await initSchema(pool);
+      logger.info("Database schema initialized");
+    } finally {
+      await close(pool);
+    }
+  });
+
+db.command("stats")
+  .description("Show listing counts by source")
+  .option("-c, --config <path>", "Config file path", "config.yaml")
+  .action(async (opts) => {
+    const config = loadConfig(opts.config);
+    const pool = await getPool(config.db.url);
+    try {
+      await initSchema(pool);
+      const stats = await getStats(pool);
+      const snapCount = await getSnapshotCount(pool);
+      if (stats.length === 0) {
+        console.log("No listings in database.");
+      } else {
+        console.log("Listings by source:");
+        for (const row of stats) {
+          console.log(
+            `  ${row.source}: ${row.total} total, ${row.active} active, ${row.inactive} inactive`,
+          );
+        }
+      }
+      console.log(`Snapshots: ${snapCount?.count ?? 0}`);
+    } finally {
+      await close(pool);
+    }
   });
 
 program.parse();

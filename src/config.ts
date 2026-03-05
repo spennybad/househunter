@@ -5,6 +5,7 @@ export interface SearchConfig {
   home_status?: "FOR_SALE" | "FOR_RENT" | "RECENTLY_SOLD";
   listing_type?: "BY_AGENT" | "BY_OWNER" | "NEW_CONSTRUCTION";
   sort?: "DEFAULT" | "NEWEST" | "PRICE_LOW" | "PRICE_HIGH";
+  radius?: number;
 }
 
 export interface FiltersConfig {
@@ -32,12 +33,17 @@ export interface OutputConfig {
   file: string | null;
 }
 
+export interface DbConfig {
+  url: string;
+}
+
 export interface Config {
   locations: string[];
   search: SearchConfig;
   filters: FiltersConfig;
   commute: CommuteConfig | null;
   output: OutputConfig;
+  db: DbConfig;
 }
 
 interface RawConfig {
@@ -46,6 +52,7 @@ interface RawConfig {
     home_status?: string;
     listing_type?: string;
     sort?: string;
+    radius?: number;
   };
   filters?: {
     min_beds?: number;
@@ -66,6 +73,9 @@ interface RawConfig {
   output?: {
     format?: string;
     file?: string | null;
+  };
+  db?: {
+    url?: string;
   };
 }
 
@@ -101,6 +111,7 @@ export function loadConfig(path: string = "config.yaml"): Config {
         (raw.search?.home_status as SearchConfig["home_status"]) ?? "FOR_SALE",
       listing_type: raw.search?.listing_type as SearchConfig["listing_type"],
       sort: (raw.search?.sort as SearchConfig["sort"]) ?? "DEFAULT",
+      radius: raw.search?.radius,
     },
     filters: {
       min_beds: raw.filters?.min_beds,
@@ -112,6 +123,11 @@ export function loadConfig(path: string = "config.yaml"): Config {
     output: {
       format: (raw.output?.format as OutputConfig["format"]) ?? "table",
       file: raw.output?.file ?? null,
+    },
+    db: {
+      url:
+        raw.db?.url ??
+        "postgresql://househunter:househunter@localhost:5432/househunter",
     },
   };
 }
